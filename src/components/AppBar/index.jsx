@@ -15,6 +15,7 @@ import HelpIcon from '@mui/icons-material/Help'
 import Profile from './Menus/Profile'
 import Tooltip from '@mui/material/Tooltip'
 import Button from '@mui/material/Button'
+import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 
 function AppBar() {
   return (
@@ -38,7 +39,7 @@ function AppBar() {
           <Recent/>
           <Started/>
           <Template/>
-          <Button variant="outlined">Create</Button>
+          <Button startIcon={<LibraryAddIcon />} variant="outlined">Create</Button>
         </Box>
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
