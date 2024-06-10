@@ -25,7 +25,11 @@ const MENU_STYLE = {
   }
 }
 
-function BoardBar() {
+function BoardBar({ board }) {
+  const capitalizeFirstLetter = (val) => {
+    if (!val) return ''
+    return `${val.charAt(0).toUpperCase()}${val.slice(1)}`
+  }
   return (
     <Box sx={{
       width: '100%',
@@ -42,13 +46,13 @@ function BoardBar() {
         <Chip
           sx={MENU_STYLE}
           icon={<DashboardIcon />}
-          label="Dwarf_Painter Project"
+          label={board?.title}
           variant="outlined"
           clickable/>
         <Chip
           sx={MENU_STYLE}
           icon={<VpnLockIcon />}
-          label="Public/Private Workspace"
+          label={capitalizeFirstLetter(board.type)}
           variant="outlined"
           clickable/>
         <Chip
