@@ -108,12 +108,12 @@ function AppBar() {
 
         <Tooltip title="Notification">
           <Badge badgeContent={4} variant='dot' color="warning">
-            <NotificationsIcon sx={{ color: 'white' }}></NotificationsIcon>
+            <NotificationsIcon sx={{ color: 'white', cursor: 'pointer' }}></NotificationsIcon>
           </Badge>
         </Tooltip>
 
         <Tooltip title="Help">
-          <HelpIcon sx={{ color: 'white' }}/>
+          <HelpIcon sx={{ color: 'white', cursor: 'pointer' }}/>
         </Tooltip>
         <Profile/>
       </Box>
