@@ -6,7 +6,7 @@ export const mockData = {
     type: 'public', // 'Private'
     ownerIds: [], // Users are admins of board
     memberIds: [], // Users are normal members of board
-    columnOrderIds: ['column-id-01', 'column-id-03', 'column-id-02'], // Order / Location of Columns in a board
+    columnOrderIds: ['column-id-01', 'column-id-02', 'column-id-03', 'column-id-04'], // Order / Location of Columns in a board
     columns: [
       {
         _id: 'column-id-01',
@@ -53,6 +53,19 @@ export const mockData = {
           { _id: 'card-id-11', boardId: 'board-id-01', columnId: 'column-id-03', title: 'Title of card 11', description: null, cover: null, memberIds: [], comments: [], attachments: [] },
           { _id: 'card-id-12', boardId: 'board-id-01', columnId: 'column-id-03', title: 'Title of card 12', description: null, cover: null, memberIds: [], comments: [], attachments: [] },
           { _id: 'card-id-13', boardId: 'board-id-01', columnId: 'column-id-03', title: 'Title of card 13', description: null, cover: null, memberIds: [], comments: [], attachments: [] }
+        ]
+      },
+      {
+        _id: 'column-id-04',
+        boardId: 'board-id-01',
+        title: 'Empty column 04',
+        cardOrderIds: ['columns-id-04-placeholder-card'],
+        cards: [
+          { _id: 'columns-id-04-placeholder-card',
+            boardId: 'board-id-01',
+            columnId: 'column-id-04',
+            FE_placeholderCard: true
+          }
         ]
       }
     ]

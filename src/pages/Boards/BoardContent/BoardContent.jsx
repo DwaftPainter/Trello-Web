@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box'
 import ListColumn from './ListColumns/ListColumn'
 import { mapOrder } from '~/utils/sorts'
+import { generatePlaceholderCard } from '~/utils/fomatter'
 import {
   DndContext,
   // PointerSensor,
@@ -10,13 +11,15 @@ import {
   useSensors,
   DragOverlay,
   defaultDropAnimationSideEffects,
-  closestCorners
+  closestCorners,
+  pointerWithin,
+  getFirstCollision
 } from '@dnd-kit/core'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
 import Column from './ListColumns/Column/Column'
 import Card from './ListColumns/Column/ListCards/Card/Card'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEmpty } from 'lodash'
 
 const ACTIVE_DRAG_TYPE = {
   COLUMN: 'ACTIVE_DRAG_TYPE_COLUMN',
@@ -29,6 +32,14 @@ function BoardContent({ board }) {
   const touchSensor = useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 500 } })
   const mySensor = useSensors(mouseSensor, touchSensor)
 
+  const [orderedColumnsState, setOrderedColumnsState] = useState([])
+  const [activeDragId, setActiveDragId] = useState(null)
+  const [activeDragType, setActiveDragType] = useState(null)
+  const [activeDragData, setActiveDragData] = useState(null)
+
+  // The last previous collision pointer (handle collision detection algorithm)
+  const lastOverId = useRef(null)
+
   const customDropAnimation = {
     sideEffects: defaultDropAnimationSideEffects({
       styles: { active: {
@@ -37,10 +48,39 @@ function BoardContent({ board }) {
     })
   }
 
-  const [orderedColumnsState, setOrderedColumnsState] = useState([])
-  const [activeDragId, setActiveDragId] = useState(null)
-  const [activeDragType, setActiveDragType] = useState(null)
-  const [activeDragData, setActiveDragData] = useState(null)
+  const collisionDetectionStrategy = useCallback ((args) => {
+    if (activeDragType === ACTIVE_DRAG_TYPE.COLUMN) {
+      return closestCorners({ ...args })
+    }
+
+    // Find out intersection points
+    const pointerIntersections = pointerWithin(args)
+
+    if (!pointerIntersections?.length) return
+
+    // Find the first overId
+    let overId = getFirstCollision(pointerIntersections, 'id')
+
+    if (overId) {
+      /* If over item is column finding the closest cardId within collision area base on
+      Collision Detection Algorithm closestCenter or closestCorners. However, closestCenter
+      seem to be more smooth  */
+      const checkColumn = orderedColumnsState.find(c => c._id === overId)
+
+      if (checkColumn) {
+        overId = closestCorners({
+          ...args,
+          droppableContainers: args.droppableContainers.filter(container => {
+            return (container.id !== overId) && checkColumn?.cardOrderIds?.includes(container.id)})
+        })[0]?.id
+      }
+      lastOverId.current = overId
+      return [{ id: overId }]
+    }
+
+    return lastOverId.current? [{ id: lastOverId.current }] : []
+
+  }, [activeDragType, orderedColumnsState])
   const [oldActiveColumn, setOldActiveColumn] = useState(null)
 
   useEffect(() => {
@@ -80,7 +120,13 @@ function BoardContent({ board }) {
 
       if (nextActiveColumn) {
         nextActiveColumn.cards = nextActiveColumn.cards.filter(card => card._id !== activeDraggingCardId)
-        nextActiveColumn.cardOrderIds = nextActiveColumn.cards
+
+        // Add placeholder card when nextActiveColumn empty
+        if (isEmpty(nextActiveColumn.cards)) {
+          nextActiveColumn.cards = [generatePlaceholderCard(nextActiveColumn)]
+        }
+
+        nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(c => c._id)
       }
 
       if (nextOverColumn) {
@@ -92,6 +138,9 @@ function BoardContent({ board }) {
         }
 
         nextOverColumn.cards = nextOverColumn.cards.toSpliced(newCardIndex, 0, rebuild_activeDraggingCardData)
+
+        nextOverColumn.cards = nextOverColumn.cards.filter(card => !card.FE_placeholderCard)
+
         nextOverColumn.cardOrderIds = nextOverColumn.cards.map(card => card._id)
       }
 
@@ -195,7 +244,8 @@ function BoardContent({ board }) {
 
   return (
     <DndContext
-      collisionDetection={closestCorners}
+      // collisionDetection={closestCorners}
+      collisionDetection={collisionDetectionStrategy}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
