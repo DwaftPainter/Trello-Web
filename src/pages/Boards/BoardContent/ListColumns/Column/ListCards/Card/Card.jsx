@@ -24,8 +24,8 @@ function Card({ card }) {
     touchAction: 'none',
     transform: CSS.Translate.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
-    border: isDragging ? '1px solid #3498db' : 'none'
+    opacity: isDragging ? 0.5 : 1
+    // border: isDragging ? '1px solid #3498db' : 'none'
   }
 
 
@@ -39,7 +39,9 @@ function Card({ card }) {
         cursor: 'pointer',
         boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
         overflow: 'unset',
-        display: card.FE_placeholderCard ? 'none' : 'block'
+        display: card.FE_placeholderCard ? 'none' : 'block',
+        border: '1px solid transparent',
+        '&:hover' : { borderColor: (theme) => theme.palette.primary.main }
       }}>
       {card?.cover &&
       <CardMedia
