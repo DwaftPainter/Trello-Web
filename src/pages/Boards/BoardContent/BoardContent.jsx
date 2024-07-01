@@ -32,7 +32,8 @@ function BoardContent({
   createNewCard,
   moveColumn,
   moveCardWithinColumns,
-  moveCardToOtherColumns
+  moveCardToOtherColumns,
+  deleteColumnDetail
 }) {
 
   const mouseSensor = useSensor(MouseSensor, { activationConstraint: { distance: 10 } })
@@ -292,7 +293,8 @@ function BoardContent({
         <ListColumn
           columns={orderedColumnsState}
           createNewColumn={createNewColumn}
-          createNewCard={createNewCard} >
+          createNewCard={createNewCard}
+          deleteColumnDetail={deleteColumnDetail} >
         </ListColumn>
         <DragOverlay dropAnimation={customDropAnimation}>
           {( !activeDragId && !activeDragType ) && null }
