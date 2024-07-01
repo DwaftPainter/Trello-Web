@@ -20,12 +20,11 @@ import ListCard from './ListCards/ListCard'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import { toast } from 'react-toastify'
-import { mapOrder } from '~/utils/sorts'
 import { useSortable } from '@dnd-kit/sortable'
 import { useState } from 'react'
 import { CSS } from '@dnd-kit/utilities'
 
-function Column({ column }) {
+function Column({ column, createNewCard }) {
   const {
     attributes,
     listeners,
@@ -43,7 +42,7 @@ function Column({ column }) {
     opacity: isDragging ? 0.5 : 1
   }
 
-  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+  const orderedCards = column?.cards
 
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
@@ -57,12 +56,19 @@ function Column({ column }) {
   const [openForm, setOpenForm] = useState(false)
   const toggleOpenForm = () => setOpenForm(!openForm)
   const [newCardTitle, setNewCardTitle] = useState('')
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!newCardTitle) {
       toast.error('Please enter your card title')
       return
     }
 
+    const newCardData = {
+      title: newCardTitle,
+      columnId: column._id
+    }
+    await createNewCard(newCardData)
+
+    //Close add cardstatus
     toggleOpenForm()
     setNewCardTitle('')
   }
