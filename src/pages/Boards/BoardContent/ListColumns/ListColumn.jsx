@@ -8,16 +8,23 @@ import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortabl
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 
-function ListColumn({ columns }) {
+function ListColumn({ columns, createNewColumn, createNewCard }) {
   const [openForm, setOpenForm] = useState(false)
   const toggleOpenForm = () => setOpenForm(!openForm)
   const [newColumnTitle, setNewColumnTitle] = useState('')
-  const addNewColumn = () => {
+  const addNewColumn = async () => {
     if (!newColumnTitle) {
       toast.error('Please enter your column title')
       return
     }
 
+    const newColumnData = {
+      title: newColumnTitle
+    }
+
+    await createNewColumn(newColumnData)
+
+    //Close add column status
     toggleOpenForm()
     setNewColumnTitle('')
   }
@@ -33,7 +40,7 @@ function ListColumn({ columns }) {
         bgcolor: 'inherit',
         '&::webkit-scrollbar-track': { m: 2 } }}>
 
-        {columns?.map(column => <Column key={column._id} column={column} /> )}
+        {columns?.map(column => <Column key={column._id} column={column} createNewCard={createNewCard}/> )}
 
         {!openForm
           ?
@@ -80,28 +87,20 @@ function ListColumn({ columns }) {
               variant="outlined"
               size='small'
               autoFocus
+              autoComplete="off"
               value={newColumnTitle}
               onChange={(e) => setNewColumnTitle(e.target.value)}
               sx={{
-                '& label': {
-                  color: 'white'
+                '& label': { color: 'white'
                 },
-                '& input': {
-                  color: 'white'
+                '& input': { color: 'white'
                 },
-                '& label.Mui-focused': {
-                  color: 'white'
+                '& label.Mui-focused': { color: 'white'
                 },
                 '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    borderColor: 'white'
-                  },
-                  '&:hover fieldset': {
-                    borderColor: 'white'
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: 'white'
-                  }
+                  '& fieldset': { borderColor: 'white' },
+                  '&:hover fieldset': { borderColor: 'white' },
+                  '&.Mui-focused fieldset': { borderColor: 'white' }
                 }
               }}
             />

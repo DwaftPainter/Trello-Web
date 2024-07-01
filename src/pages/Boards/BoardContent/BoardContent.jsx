@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box'
 import ListColumn from './ListColumns/ListColumn'
-import { mapOrder } from '~/utils/sorts'
 import { generatePlaceholderCard } from '~/utils/fomatter'
 import {
   DndContext,
@@ -27,7 +26,14 @@ const ACTIVE_DRAG_TYPE = {
   CARD: 'ACTIVE_DRAG_TYPE_CARD'
 }
 
-function BoardContent({ board }) {
+function BoardContent({
+  board,
+  createNewColumn,
+  createNewCard,
+  moveColumn,
+  moveCardWithinColumns,
+  moveCardToOtherColumns
+}) {
 
   const mouseSensor = useSensor(MouseSensor, { activationConstraint: { distance: 10 } })
   const touchSensor = useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 500 } })
@@ -85,7 +91,7 @@ function BoardContent({ board }) {
   const [oldActiveColumn, setOldActiveColumn] = useState(null)
 
   useEffect(() => {
-    setOrderedColumnsState(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
+    setOrderedColumnsState(board.columns)
   }, [board])
 
   const findColumnByCardId = (cardId) => {
@@ -99,7 +105,8 @@ function BoardContent({ board }) {
     active,
     activeColumn,
     activeDraggingCardId,
-    activeDraggingCardData
+    activeDraggingCardData,
+    triggerForm
   ) => {
     setOrderedColumnsState(preColumn => {
       const overCardIndex = overColumn?.cards?.findIndex(card => card._id === overCardId)
@@ -145,6 +152,14 @@ function BoardContent({ board }) {
         nextOverColumn.cardOrderIds = nextOverColumn.cards.map(card => card._id)
       }
 
+      if (triggerForm === 'handleDragEnd') {
+        moveCardToOtherColumns(
+          activeDragId,
+          oldActiveColumn._id,
+          nextOverColumn._id,
+          nextColumns
+        )
+      }
       return nextColumns
     } )
   }
@@ -199,6 +214,7 @@ function BoardContent({ board }) {
       if (!activeColumn || !overColumn) return
 
       if (oldActiveColumn._id !== overColumn._id) {
+        // Drag and Drop card between different columns
         exchangeCardBetweenTwoColumns(
           overColumn,
           overCardId,
@@ -206,22 +222,31 @@ function BoardContent({ board }) {
           active,
           activeColumn,
           activeDraggingCardId,
-          activeDraggingCardData
+          activeDraggingCardData,
+          'handleDragEnd'
         )
       } else {
+        // Drag and Drop card in the same column
         const oldCardIndex = oldActiveColumn?.cards.findIndex(c => c._id === activeDragId)
         const newCardIndex = overColumn?.cards.findIndex(c => c._id === overCardId)
         const dndCards = arrayMove(oldActiveColumn?.cards, oldCardIndex, newCardIndex)
+        const dndOrderedCardIds = dndCards.map(c => c._id)
 
+        // State is still called in here to avoid flickering bug and delay
         setOrderedColumnsState(preColumn => {
           const nextColumn = cloneDeep(preColumn)
           const targetColumn = nextColumn.find(c => c._id === overColumn._id )
 
           targetColumn.cards = dndCards
-          targetColumn.cardOrderIds = dndCards.map(c => c._id)
+          targetColumn.cardOrderIds = dndOrderedCardIds
 
           return nextColumn
         })
+
+        /* Calling function moveCardWithinColumns property located in
+        the highest father component
+         */
+        moveCardWithinColumns(dndCards, dndOrderedCardIds, oldActiveColumn._id)
       }
     }
 
@@ -233,7 +258,11 @@ function BoardContent({ board }) {
 
         const dndOrderedColumns = arrayMove(orderedColumnsState, oldIndex, newIndex)
         // const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
+
         setOrderedColumnsState(dndOrderedColumns)
+
+        moveColumn(dndOrderedColumns)
+
       }
     }
 
@@ -260,7 +289,11 @@ function BoardContent({ board }) {
         overflowY: 'hidden',
         p: '10px 0'
       }}>
-        <ListColumn columns={orderedColumnsState}></ListColumn>
+        <ListColumn
+          columns={orderedColumnsState}
+          createNewColumn={createNewColumn}
+          createNewCard={createNewCard} >
+        </ListColumn>
         <DragOverlay dropAnimation={customDropAnimation}>
           {( !activeDragId && !activeDragType ) && null }
           {( activeDragType === ACTIVE_DRAG_TYPE.COLUMN && activeDragId) &&
