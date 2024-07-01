@@ -11,12 +11,14 @@ import {
   createNewCardAPIs,
   updateBoardDetailsAPI,
   updateColumnDetailsAPI,
-  moveCardToOtherColumnsApi } from '~/apis/index'
+  moveCardToOtherColumnsApi,
+  deleteColumnDetailsAPI } from '~/apis/index'
 import { useEffect, useState } from 'react'
 import { fetchBoardDetailsAPI } from '~/apis'
 import { useParams } from 'react-router-dom'
 import { mapOrder } from '~/utils/sorts'
 import { Typography } from '@mui/material'
+import { toast } from 'react-toastify'
 
 function Board() {
 
@@ -125,6 +127,17 @@ function Board() {
     })
   }
 
+  const deleteColumnDetail = (columnId) => {
+    const newBoard = { ...board }
+    newBoard.columns = newBoard.columns.filter(c => c._id !== columnId)
+    newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== columnId)
+    setBoard(newBoard)
+
+    deleteColumnDetailsAPI(columnId).then(res => {
+      toast.success(res?.deleteResult)
+    })
+  }
+
   if (!board) {
     return (
       <Box sx={{
@@ -150,7 +163,8 @@ function Board() {
         createNewCard={createNewCard}
         moveColumn={moveColumn}
         moveCardWithinColumns={moveCardWithinColumns}
-        moveCardToOtherColumns={moveCardToOtherColumns} />
+        moveCardToOtherColumns={moveCardToOtherColumns}
+        deleteColumnDetail={deleteColumnDetail} />
     </Container>
   )
 }
