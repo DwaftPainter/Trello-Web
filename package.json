@@ -6,7 +6,7 @@
   "author": "Dwarf_Painter",
   "description": "https://youtube.com/@trungquandev",
   "engines": {
-    "node": "18.20.2"
+    "node": "18.x"
   },
   "scripts": {
     "dev": "vite --host",
