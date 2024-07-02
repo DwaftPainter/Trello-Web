@@ -15,7 +15,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/test" element={<Test />} />
-        <Route path="/boards/:boardId" element={<Board />} />
+        <Route path="/boards" element={<Board />} />
         {/* Optionally redirect all unmatched routes to the home page or a 404 page */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

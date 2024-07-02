@@ -23,7 +23,7 @@ import { toast } from 'react-toastify'
 function Board() {
 
   const [board, setBoard] = useState(null)
-  const { boardId } = useParams()
+  const boardId = '667cdc7b12347ccf0c245d9e'
 
   useEffect( () => {
     //Call APIs
