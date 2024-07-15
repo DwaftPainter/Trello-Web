@@ -15,26 +15,29 @@ import {
   getFirstCollision
 } from '@dnd-kit/core'
 import { MouseSensor, TouchSensor } from '~/customLibraries/DndKitSensor'
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useContext } from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
 import Column from './ListColumns/Column/Column'
 import Card from './ListColumns/Column/ListCards/Card/Card'
 import { cloneDeep, isEmpty } from 'lodash'
+import { BoardContext } from '../_id'
+
 
 const ACTIVE_DRAG_TYPE = {
   COLUMN: 'ACTIVE_DRAG_TYPE_COLUMN',
   CARD: 'ACTIVE_DRAG_TYPE_CARD'
 }
 
-function BoardContent({
-  board,
-  createNewColumn,
-  createNewCard,
-  moveColumn,
-  moveCardWithinColumns,
-  moveCardToOtherColumns,
-  deleteColumnDetail
-}) {
+function BoardContent() {
+
+  const {
+    board,
+    createNewColumn,
+    createNewCard,
+    moveColumn,
+    moveCardWithinColumns,
+    moveCardToOtherColumns,
+    deleteColumnDetail } = useContext(BoardContext)
 
   const mouseSensor = useSensor(MouseSensor, { activationConstraint: { distance: 10 } })
   const touchSensor = useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 500 } })

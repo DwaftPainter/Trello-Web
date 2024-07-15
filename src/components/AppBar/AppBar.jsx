@@ -22,7 +22,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
 
 
-function AppBar() {
+function AppBar({ handleClickOpen }) {
   const [searchValue, setSearchValue] = useState('')
   return (
     <Box px={2} sx={{
@@ -54,11 +54,13 @@ function AppBar() {
                 border: 'none'
               } }}
             startIcon={<LibraryAddIcon />}
-            variant="outlined">Create</Button>
+            variant="outlined"
+            onClick={handleClickOpen}>Create</Button>
         </Box>
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <TextField
+          autoComplete='off'
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           type='text'

@@ -10,8 +10,9 @@ import { toast } from 'react-toastify'
 
 function ListColumn({ columns, createNewColumn, createNewCard, deleteColumnDetail }) {
   const [openForm, setOpenForm] = useState(false)
-  const toggleOpenForm = () => setOpenForm(!openForm)
   const [newColumnTitle, setNewColumnTitle] = useState('')
+  const toggleOpenForm = () => setOpenForm(!openForm)
+
   const addNewColumn = async () => {
     if (!newColumnTitle) {
       toast.error('Please enter your column title')
