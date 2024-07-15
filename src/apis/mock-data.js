@@ -1,10 +1,13 @@
 export const mockData = {
-  board: {
+  users: {
+    _id: 'user-id-01'
+  },
+  boards: [{
     _id: 'board-id-01',
     title: 'Dwarf Painter',
     description: '09/06/2024',
     type: 'public', // 'Private'
-    ownerIds: [], // Users are admins of board
+    ownerIds: ['user-id-01'], // Users are admins of board
     memberIds: [], // Users are normal members of board
     columnOrderIds: ['column-id-01', 'column-id-02', 'column-id-03', 'column-id-04'], // Order / Location of Columns in a board
     columns: [
@@ -69,5 +72,12 @@ export const mockData = {
         ]
       }
     ]
+  },
+  {
+    _id: 'board-id-02',
+    ownerIds: 'user-id-01',
+    title: 'Board Test 02',
+    description: '09/06/2024'
   }
+  ]
 }

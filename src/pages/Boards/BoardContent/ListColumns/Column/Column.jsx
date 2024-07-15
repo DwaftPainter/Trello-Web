@@ -34,6 +34,10 @@ function Column({ column, createNewCard, deleteColumnDetail }) {
     transition,
     isDragging
   } = useSortable({ id: column?._id, data: { ...column } })
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [openForm, setOpenForm] = useState(false)
+  const [newCardTitle, setNewCardTitle] = useState('')
+  const confirmDeleteColumn = useConfirm()
 
   const DndColumnStyle = {
     touchAction: 'none',
@@ -45,7 +49,6 @@ function Column({ column, createNewCard, deleteColumnDetail }) {
 
   const orderedCards = column?.cards
 
-  const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -54,9 +57,7 @@ function Column({ column, createNewCard, deleteColumnDetail }) {
     setAnchorEl(null)
   }
 
-  const [openForm, setOpenForm] = useState(false)
   const toggleOpenForm = () => setOpenForm(!openForm)
-  const [newCardTitle, setNewCardTitle] = useState('')
   const addNewCard = async () => {
     if (!newCardTitle) {
       toast.error('Please enter your card title')
@@ -64,7 +65,7 @@ function Column({ column, createNewCard, deleteColumnDetail }) {
     }
 
     const newCardData = {
-      title: newCardTitle,
+      title: newCardTitle.trim(),
       columnId: column._id
     }
     await createNewCard(newCardData)
@@ -74,7 +75,6 @@ function Column({ column, createNewCard, deleteColumnDetail }) {
     setNewCardTitle('')
   }
 
-  const confirmDeleteColumn = useConfirm()
   const handleDeleteColumn = () => {
     confirmDeleteColumn({
       title: 'Delete Column?',
