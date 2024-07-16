@@ -1,4 +1,4 @@
-import { Container, Divider, Grid, Typography } from '@mui/material'
+import { Container, Divider, Grid, Pagination, Typography } from '@mui/material'
 import AppBar from '~/components/AppBar/AppBar'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -23,6 +23,13 @@ function Home() {
     public: false,
     private: true
   })
+  const [page, setPage] = useState(1)
+  const boardsPerPage = 10
+  const paginationHandleChange = (event, value) => {
+    setPage(value)
+  }
+  //Take boards each page
+  const paginatedBoards = boards.slice((page - 1) * boardsPerPage, page * boardsPerPage)
 
   useEffect(() => {
     getUserDetails().then((res) => {
@@ -63,9 +70,7 @@ function Home() {
     color: (theme) =>
       active
         ? theme.palette.primary.main
-        : theme.palette.mode === 'dark'
-          ? '#ffffff'
-          : '#828282'
+        : '#828282'
   })
 
   const toggleActiveButton = (buttonName) => {
@@ -161,10 +166,26 @@ function Home() {
             Your Boards
           </Typography>
           <Grid container spacing={{ xs: 2, md: 2 }}>
-            {boards?.map((board) => (
+            {paginatedBoards?.map((board) => (
               <BoardCard key={board._id} board={board} />
             ))}
           </Grid>
+          {boards.length > 10 && (
+            <Pagination
+              count={Math.ceil(boards.length / boardsPerPage)}
+              page={page}
+              onChange={paginationHandleChange}
+              color="primary"
+              shape="rounded"
+              variant='outlined'
+              size='small'
+              sx={{
+                position: 'absolute',
+                bottom: '120px',
+                right: '280px'
+              }}
+            />
+          )}
         </Box>
       </Box>
     </Container>
