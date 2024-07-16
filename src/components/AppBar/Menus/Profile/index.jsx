@@ -10,10 +10,12 @@ import Tooltip from '@mui/material/Tooltip'
 import PersonAdd from '@mui/icons-material/PersonAdd'
 import Settings from '@mui/icons-material/Settings'
 import Logout from '@mui/icons-material/Logout'
+import { useNavigate } from 'react-router-dom'
 
 function Profile() {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
+  const navigate = useNavigate()
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
   }
@@ -33,8 +35,7 @@ function Profile() {
             aria-expanded={open ? 'true' : undefined}
           >
             <Avatar
-              sx={{ width: 34, height: 34 }}
-              src="https://th.bing.com/th/id/OIP.naUjSUPa4G8Abi3vWZW0vAHaHN?rs=1&pid=ImgDetMain">
+              sx={{ width: 34, height: 34 }}>
             </Avatar>
           </IconButton>
         </Tooltip>
@@ -74,10 +75,9 @@ function Profile() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={() => {
+          navigate('/setting')
+        }}>
           <Avatar /> My account
         </MenuItem>
         <Divider />

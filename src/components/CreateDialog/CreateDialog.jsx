@@ -75,7 +75,6 @@ function CreateDialog({ open, handleClose, checkBoxState, handleChange, createNe
             ) }}
         />
         <TextField
-          autoFocus
           autoComplete='off'
           margin="dense"
           id="description"
