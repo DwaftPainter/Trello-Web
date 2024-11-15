@@ -47,7 +47,9 @@ export const createNewAccountAPis = async (newAccount) => {
 }
 
 export const checkExistAccount = async (account) => {
+  console.log('pass')
   const response = await axios.post(`${API_ROOT}/v2/user/login`, account)
+  console.log(response)
   return response.data
 }
 
@@ -57,4 +59,20 @@ export const getUserDetails = async () => {
   }
   const response = await axios.get(`${API_ROOT}/v2/user/login`, { headers })
   return response.data
+}
+
+export const updateUserDetails = async (updateData) => {
+  const headers = {
+    Authorization: `Bearer ${localStorage.token}`
+  }
+  const response = await axios.put(`${API_ROOT}/v2/user/setting/account`, updateData, { headers } )
+  return response.data
+}
+
+export const changePassword = async (password) => {
+  const headers = {
+    Authorization: `Bearer ${localStorage.token}`
+  }
+  const response = await axios.put(`${API_ROOT}/v2/user/setting/security`, password, { headers } )
+  return response
 }

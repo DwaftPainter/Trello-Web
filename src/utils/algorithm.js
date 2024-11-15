@@ -1,9 +1,10 @@
 export const getUserId = () => {
   const encodedPayload = localStorage.token?.split('.')
-  const payload = JSON.parse(atob(encodedPayload[1]))
-  const userId = payload._id
-
-  return userId
+  if (encodedPayload) {
+    const payload = JSON.parse(atob(encodedPayload[1]))
+    const userId = payload._id
+    return userId
+  }
 }
 
 export const getRandomRGBColor = () => {

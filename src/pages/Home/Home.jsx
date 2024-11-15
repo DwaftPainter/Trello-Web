@@ -21,7 +21,7 @@ function Home() {
   const [open, setOpen] = useState(false)
   const [checkBoxState, setCheckBoxState] = useState({
     public: false,
-    private: true
+    private: false
   })
   const [page, setPage] = useState(1)
   const boardsPerPage = 10
@@ -32,16 +32,13 @@ function Home() {
   const paginatedBoards = boards.slice((page - 1) * boardsPerPage, page * boardsPerPage)
 
   useEffect(() => {
-    getUserDetails().then((res) => {
-      setBoards(res)
-    })
-  }, [])
-
-  useEffect(() => {
-    if (!boards) {
-      navigate('/register') // Redirect to the register page
+    if (localStorage.token) {
+      getUserDetails().then((res) => {
+        setBoards(res.boards)
+      }) } else {
+      navigate('/login')
     }
-  }, [boards, navigate])
+  }, [navigate])
 
   const handleChange = (event) => {
     const { name } = event.target

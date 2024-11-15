@@ -55,8 +55,6 @@ function SignIn() {
           backgroundRepeat: 'no-repeat',
           backgroundSize: '100% 100%',
           bgcolor: '#CBDBFF'
-          // backgroundImage:
-          //   'url(https://i.pinimg.com/564x/36/74/2a/36742a392b7d9508b649fb4a48d3e318.jpg)'
         }}
       >
         <Box sx={{
