@@ -19,7 +19,7 @@ export const parseErrorMessages = (message) => {
     errorObj.username = 'Username must be at least 3 characters long.'
   }
   if (message.includes('Username must be less than or equal to 12 characters long.')) {
-    errorObj.username = 'Username must be less than or equal to 12 characters long.'
+    errorObj.username = 'Username must be 12 characters or less.'
   }
   if (message.includes('Gmail must be a string.')) {
     errorObj.gmail = 'Gmail must be a string.'

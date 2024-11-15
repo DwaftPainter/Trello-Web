@@ -10,7 +10,7 @@ import { parseErrorMessages } from '~/utils/fomatter'
 import { inputStyle } from '~/utils/style'
 
 function SignUp() {
-  const [username, setUsername] = useState()
+  const [displayName, setDisplayName] = useState()
   const [password, setPassword] = useState()
   const [gmail, setGmail] = useState()
   const [errors, setErrors] = useState({})
@@ -20,14 +20,14 @@ function SignUp() {
     e.preventDefault()
     try {
       const response = await createNewAccountAPis({
-        username: username,
+        displayName: displayName,
         gmail: gmail,
         password: password })
       if (response.acknowledged) {
         navigate('/login')
         setGmail('')
         setPassword('')
-        setUsername('')
+        setDisplayName('')
         setErrors({})
       }
     } catch (error) {
@@ -96,7 +96,7 @@ function SignUp() {
                 label="Username"
                 autoComplete="off"
                 variant="outlined"
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => setDisplayName(e.target.value)}
                 error={!!errors.username}
                 helperText={errors.username || ''} />
               <TextField

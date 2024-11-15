@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import Menu from '@mui/material/Menu'
@@ -10,17 +10,34 @@ import Tooltip from '@mui/material/Tooltip'
 import PersonAdd from '@mui/icons-material/PersonAdd'
 import Settings from '@mui/icons-material/Settings'
 import Logout from '@mui/icons-material/Logout'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { AccountContext } from '~/pages/Users/Account'
+import { getUserDetails } from '~/apis'
+
 
 function Profile() {
   const [anchorEl, setAnchorEl] = React.useState(null)
+  const [storeAvatar, setStoreAvatar] = useState(localStorage.getItem('avatar') || null)
   const open = Boolean(anchorEl)
   const navigate = useNavigate()
+  useEffect(() => {
+    getUserDetails().then(res => {
+      setStoreAvatar(res.user.avatar)
+      localStorage.setItem('avatar', res.user.avatar)
+    })
+  }, [])
+  const { avatar } = useContext(AccountContext)
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
   }
   const handleClose = () => {
     setAnchorEl(null)
+  }
+  const logOut = () => {
+    localStorage.removeItem('token')
+    navigate('/login')
   }
   return (
     <Box>
@@ -34,9 +51,7 @@ function Profile() {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            <Avatar
-              sx={{ width: 34, height: 34 }}>
-            </Avatar>
+            <Avatar sx={{ width: 34, height: 34 }} src={avatar || localStorage.getItem('avatar')}/>
           </IconButton>
         </Tooltip>
       </Box>
@@ -76,9 +91,9 @@ function Profile() {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MenuItem onClick={() => {
-          navigate('/setting')
+          navigate('/setting/account')
         }}>
-          <Avatar /> My account
+          <Avatar src={avatar || localStorage.getItem('avatar')} /> My account
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleClose}>
@@ -93,7 +108,7 @@ function Profile() {
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={logOut}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
